@@ -31,12 +31,12 @@ EPROM_D1  = 0x02
 EPROM_D0  = 0x01
 
 UBCD_ASC            = EPROM_A14
-UBCD_V2  = UBCD_ABI = EPROM_A13
-UBCD_V1  = UBCD_FS  = EPROM_A12
+UBCD_V1  = UBCD_FS  = EPROM_A13
+UBCD_V2  = UBCD_ABI = EPROM_A12
 UBCD_V0  = UBCD_LC  = EPROM_A11
-UBCD_X9             = EPROM_A10
-UBCD_X6             = EPROM_A9
-UBCD_X7             = EPROM_A8
+UBCD_X7             = EPROM_A10
+UBCD_X9             = EPROM_A9
+UBCD_X6             = EPROM_A8
 UBCD_AL             = EPROM_A7
 UBCD_B   = UBCD_D6  = EPROM_A6
 UBCD_C   = UBCD_D5  = EPROM_A5
@@ -178,7 +178,7 @@ def ubcdDecode(addr):
 	if addr & UBCD_V2: version += 4
 	if addr & UBCD_V1: version += 2
 	if addr & UBCD_V0: version += 1
-	# blanking version
+	# RCA / blanking version
 	if version == 0:
 		return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
 	# TI version
@@ -197,26 +197,32 @@ def ubcdDecode(addr):
 			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
 	# NatSemi version
 	if version == 2:
-		if value == 10 or value == 11:
+		if value == 10:
 			return output(RBO=True, a=OFF, b=OFF, c=ON, d=ON, e=ON, f=OFF, g=ON)
-		if value == 12 or value == 13 or value == 14:
+		if value == 11:
+			return output(RBO=True, a=ON, b=ON, c=OFF, d=OFF, e=OFF, f=ON, g=ON)
+		if value == 12:
+			return output(RBO=True, a=ON, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
+		if value == 13:
 			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=ON)
+		if value == 14:
+			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=ON, e=OFF, f=OFF, g=OFF)
 		if value == 15:
 			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
-	# Electronika version
+	# Toshiba version
 	if version == 3:
 		if value == 10:
-			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=ON)
+			return output(RBO=True, a=ON, b=ON, c=ON, d=ON, e=ON, f=ON, g=OFF)
 		if value == 11:
-			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=ON, e=ON, f=ON, g=OFF)
+			return output(RBO=True, a=OFF, b=ON, c=ON, d=OFF, e=OFF, f=OFF, g=OFF)
 		if value == 12:
-			return output(RBO=True, a=ON, b=OFF, c=OFF, d=ON, e=ON, f=ON, g=OFF)
+			return output(RBO=True, a=ON, b=ON, c=OFF, d=ON, e=ON, f=OFF, g=ON)
 		if value == 13:
-			return output(RBO=True, a=ON, b=OFF, c=OFF, d=OFF, e=ON, f=ON, g=OFF)
+			return output(RBO=True, a=ON, b=ON, c=ON, d=ON, e=OFF, f=OFF, g=ON)
 		if value == 14:
-			return output(RBO=True, a=ON, b=OFF, c=OFF, d=ON, e=ON, f=ON, g=ON)
+			return output(RBO=True, a=OFF, b=ON, c=ON, d=OFF, e=OFF, f=ON, g=ON)
 		if value == 15:
-			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
+			return output(RBO=True, a=ON, b=OFF, c=ON, d=ON, e=OFF, f=ON, g=ON)
 	# lines version
 	if version == 4:
 		if value == 10:
@@ -231,18 +237,18 @@ def ubcdDecode(addr):
 			return output(RBO=True, a=ON, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
 		if value == 15:
 			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
-	# dozenal version
+	# Electronika version
 	if version == 5:
 		if value == 10:
-			return output(RBO=True, a=OFF, b=ON, c=ON, d=OFF, e=ON, f=ON, g=ON)
+			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=ON)
 		if value == 11:
-			return output(RBO=True, a=ON, b=OFF, c=OFF, d=ON, e=ON, f=ON, g=ON)
+			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=ON, e=ON, f=ON, g=OFF)
 		if value == 12:
-			return output(RBO=True, a=OFF, b=OFF, c=ON if addr & UBCD_X7 else OFF, d=ON, e=ON, f=ON, g=OFF)
+			return output(RBO=True, a=ON, b=OFF, c=OFF, d=ON, e=ON, f=ON, g=OFF)
 		if value == 13:
-			return output(RBO=True, a=OFF, b=OFF, c=ON, d=OFF, e=ON, f=ON, g=ON)
+			return output(RBO=True, a=ON, b=OFF, c=OFF, d=OFF, e=ON, f=ON, g=OFF)
 		if value == 14:
-			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=ON, f=ON, g=OFF)
+			return output(RBO=True, a=ON, b=OFF, c=OFF, d=ON, e=ON, f=ON, g=ON)
 		if value == 15:
 			return output(RBO=True, a=OFF, b=OFF, c=OFF, d=OFF, e=OFF, f=OFF, g=OFF)
 	# Code B version
